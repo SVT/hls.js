@@ -149,7 +149,13 @@ class SubtitleStreamController extends TaskLoop {
     }
 
     // Find the lowest fragment index based on current time
-    const lowerIndex = fragments.findIndex((fragment) => fragment.start >= this.media.currentTime);
+    let lowerIndex = -1;
+    for (let i = 0; i < fragments.length; i++) {
+      if (fragments[i].start >= this.media.currentTime) {
+        lowerIndex = i;
+        break;
+      }
+    }
 
     // Find the upper fragment index based on lower index and max buffer length
     const upperIndex = Math.min(fragments.length - 1, (lowerIndex + this.config.maxBufferLength));
