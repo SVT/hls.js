@@ -15987,8 +15987,6 @@ var subtitle_stream_controller_SubtitleStreamController = function (_TaskLoop) {
 
 
   SubtitleStreamController.prototype.getFragmentsBasedOnMaxBufferLength = function getFragmentsBasedOnMaxBufferLength() {
-    var _this4 = this;
-
     var fragments = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
     if (!this.config.maxBufferLength) {
@@ -15996,9 +15994,13 @@ var subtitle_stream_controller_SubtitleStreamController = function (_TaskLoop) {
     }
 
     // Find the lowest fragment index based on current time
-    var lowerIndex = fragments.findIndex(function (fragment) {
-      return fragment.start >= _this4.media.currentTime;
-    });
+    var lowerIndex = -1;
+    for (var i = 0; i < fragments.length; i++) {
+      if (fragments[i].start >= this.media.currentTime) {
+        lowerIndex = i;
+        break;
+      }
+    }
 
     // Find the upper fragment index based on lower index and max buffer length
     var upperIndex = Math.min(fragments.length - 1, lowerIndex + this.config.maxBufferLength);
@@ -16022,14 +16024,14 @@ var subtitle_stream_controller_SubtitleStreamController = function (_TaskLoop) {
 
 
   SubtitleStreamController.prototype.onSubtitleTracksUpdated = function onSubtitleTracksUpdated(data) {
-    var _this5 = this;
+    var _this4 = this;
 
     logger["b" /* logger */].log('subtitle tracks updated');
     this.tracks = data.subtitleTracks;
     this.clearVttFragQueues();
     this.vttFragSNsProcessed = {};
     this.tracks.forEach(function (track) {
-      _this5.vttFragSNsProcessed[track.id] = [];
+      _this4.vttFragSNsProcessed[track.id] = [];
     });
   };
 
